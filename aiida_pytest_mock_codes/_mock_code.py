@@ -25,6 +25,7 @@ def get_config() -> ty.Dict[str, str]:
     directories.
     """
     cwd = pathlib.Path(os.getcwd())
+    config: ty.Dict[str, str]
     for dir_path in [cwd, *cwd.parents]:
         config_file_path = (dir_path / '.aiida-pytest-mock-codes.yml')
         if config_file_path.exists():
