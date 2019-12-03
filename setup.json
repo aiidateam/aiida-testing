@@ -1,0 +1,51 @@
+{
+  "name": "aiida-pytest-mock-codes",
+  "version": "0.0.0a1",
+  "url": "https://aiida-pytest-mock-codes.readthedocs.io/",
+  "description": "Pytest plugin for mocking AiiDA codes.",
+  "author": "Dominik Gresch",
+  "author_email": "greschd@gmx.ch",
+  "python_requires": ">=3.7",
+  "license": "Apache 2.0",
+  "classifiers": [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Plugins",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Topic :: Scientific/Engineering :: Physics",
+    "Framework :: AiiDA",
+    "Framework :: Pytest"
+  ],
+  "keywords": [
+    "AiiDA",
+    "testing",
+    "pytest",
+    "mock"
+  ],
+  "include_package_data": true,
+  "setup_requires": [
+    "reentry"
+  ],
+  "reentry_register": true,
+  "install_requires": [
+    "aiida-core>=1.0.0<2.0.0",
+    "pytest>=3.6",
+    "pytest-datadir"
+  ],
+  "extras_require": {
+    "docs": [
+      "sphinx",
+      "sphinx-rtd-theme"
+    ],
+    "testing": [],
+    "dev_precommit": [
+      "yapf==0.28",
+      "pre-commit",
+      "prospector==1.1.7",
+      "pylint==2.3.1",
+      "mypy==0.740"
+    ]
+  }
+}

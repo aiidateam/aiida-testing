@@ -1,0 +1,8 @@
+*.pyc
+*.egg*
+.pytest_cache
+*.swp
+.coverage*
+dist
+.vscode
+.mypy_cache
