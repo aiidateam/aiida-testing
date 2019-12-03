@@ -43,6 +43,8 @@ def run() -> None:
 
         os.makedirs(res_dir)
 
+        # Here we rely on getting the directory name before
+        # accessing its content, hence using os.walk.
         for dirname, _, filenames in os.walk('.'):
             if dirname.startswith('./.aiida'):
                 continue
@@ -70,16 +72,15 @@ def get_hash():
     Get the MD5 hash for the current working directory.
     """
     md5sum = hashlib.md5()
-    for dirname, _, filenames in os.walk('.'):
-        if dirname.startswith('./.aiida'):
-            continue
-        for filename in filenames:
-            file_path = os.path.join(dirname, filename)
-            with open(file_path, 'rb') as file_obj:
+    # Here the order needs to be consistent, thus globbing
+    # with 'sorted'.
+    for path in sorted(pathlib.Path('.').glob('**/*')):
+        if path.is_file() and not path.match('.aiida/**'):
+            with open(path, 'rb') as file_obj:
                 file_content_bytes = file_obj.read()
-            if filename == SUBMIT_FILE:
+            if path.name == SUBMIT_FILE:
                 file_content_bytes = strip_submit_content(file_content_bytes)
-            md5sum.update(file_path.encode())
+            md5sum.update(path.name.encode())
             md5sum.update(file_content_bytes)
 
     return md5sum
