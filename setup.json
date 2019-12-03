@@ -32,20 +32,28 @@
   "install_requires": [
     "aiida-core>=1.0.0<2.0.0",
     "pytest>=3.6",
-    "pytest-datadir"
+    "pyyaml"
   ],
   "extras_require": {
     "docs": [
       "sphinx",
       "sphinx-rtd-theme"
     ],
-    "testing": [],
+    "testing": [
+      "aiida-diff",
+      "pytest-datadir"
+    ],
     "dev_precommit": [
       "yapf==0.28",
       "pre-commit",
       "prospector==1.1.7",
       "pylint==2.3.1",
       "mypy==0.740"
+    ]
+  },
+  "entry_points": {
+    "console_scripts": [
+      "aiida-mock-code=aiida_pytest_mock_codes._cli:run"
     ]
   }
 }

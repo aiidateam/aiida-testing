@@ -1,0 +1,1 @@
+_aiidasubmit.sh: line 7: invalid_path: command not found
