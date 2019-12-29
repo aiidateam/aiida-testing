@@ -60,6 +60,7 @@ def run() -> None:
         # copy outputs into working directory
         for path in res_dir.iterdir():
             if path.is_dir():
+                shutil.rmtree(path.name, ignore_errors=True)
                 shutil.copytree(path, path.name)
             elif path.is_file():
                 shutil.copyfile(path, path.name)
