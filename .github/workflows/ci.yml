@@ -46,7 +46,9 @@ jobs:
         AIIDA_TEST_BACKEND: ${{ matrix.backend }}
         # show timings of tests
         PYTEST_ADDOPTS: "--durations=0"
-      run: cd tests; pytest
+      run: |
+        aiida-mock-code || true
+        cd tests; pytest
 
   # docs:
   #   runs-on: ubuntu-latest
