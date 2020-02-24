@@ -30,6 +30,6 @@ repos:
       (?x)^(
         setup.json|
         utils/validate_version_consistency.py|
-        aiida_pytest_mock_codes/__init__.py
+        aiida_mock_codes/__init__.py
       )$
     pass_filenames: false
