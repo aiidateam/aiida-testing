@@ -30,7 +30,7 @@ def get_config() -> ty.Dict[str, str]:
         config_file_path = (dir_path / '.aiida-mock-codes.yml')
         if config_file_path.exists():
             with open(config_file_path) as config_file:
-                config = yaml.load(config_file)
+                config = yaml.load(config_file, Loader=yaml.SafeLoader)
                 break
     else:
         config = {}

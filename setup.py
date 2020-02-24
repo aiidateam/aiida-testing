@@ -15,7 +15,7 @@ with open(SETUP_JSON_PATH, 'r') as json_file:
     SETUP_KWARGS = json.load(json_file)
 EXTRAS_REQUIRE = SETUP_KWARGS['extras_require']
 EXTRAS_REQUIRE['dev'] = (
-    EXTRAS_REQUIRE["docs"] + EXTRAS_REQUIRE["testing"] + EXTRAS_REQUIRE["dev_precommit"]
+    EXTRAS_REQUIRE["docs"] + EXTRAS_REQUIRE["testing"] + EXTRAS_REQUIRE["pre-commit"]
 )
 
 if __name__ == '__main__':
