@@ -45,7 +45,7 @@
       "aiida-diff",
       "pytest-datadir"
     ],
-    "dev_precommit": [
+    "pre-commit": [
       "yapf==0.28",
       "pre-commit",
       "prospector==1.1.7",
