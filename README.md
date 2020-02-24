@@ -1,3 +1,3 @@
-# aiida-pytest-mock-codes
+# aiida-mock-codes
 
 Defines a pytest plugin for mocking AiiDA codes.
