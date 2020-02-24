@@ -68,7 +68,7 @@ def run() -> None:
                 sys.exit(f"Can not copy '{path.name}'.")
 
 
-def get_hash():
+def get_hash() -> 'hashlib._Hash':
     """
     Get the MD5 hash for the current working directory.
     """
