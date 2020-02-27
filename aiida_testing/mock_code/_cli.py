@@ -11,6 +11,7 @@ import shutil
 import hashlib
 import subprocess
 import typing as ty
+import fnmatch
 
 from ._env_keys import EnvKeys
 
@@ -51,7 +52,7 @@ def run() -> None:
                 continue
             os.makedirs(os.path.join(res_dir, dirname), exist_ok=True)
             for filename in filenames:
-                if filename in ignore_files:
+                if any(fnmatch.fnmatch(filename, expr) for expr in ignore_files):
                     continue
                 file_path = os.path.join(dirname, filename)
                 res_file_path = os.path.join(res_dir, file_path)
