@@ -52,7 +52,6 @@ extensions = [
     'sphinx.ext.mathjax',
     'sphinx.ext.intersphinx',
     'sphinx.ext.viewcode',
-    'aiida.sphinxext',
 ]
 
 intersphinx_mapping = {
