@@ -12,12 +12,6 @@ Use the following commands to install ``aiida-testing``::
 
     pip install aiida-testing
 
-Or, if you want to develop ``aiida-testing``::
-
-    git clone https://github.com/aiidateam/aiida-testing
-    cd aiida-testing
-    pip install -e .
-
 
 Usage
 +++++

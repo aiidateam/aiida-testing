@@ -2,6 +2,21 @@
 Developer guide
 ===============
 
+Full setup
+++++++++++
+
+The following commands give you a complete development setup for
+``aiida-testing``.
+Make sure to run this in the appropriate virtual environment::
+
+    git clone https://github.com/aiidateam/aiida-testing.git
+    cd aiida-testing
+    pip install -e .[dev]
+    pre-commit install
+
+Commands to install only parts of the development setup are included
+below.
+
 Running the tests
 +++++++++++++++++
 
@@ -48,6 +63,14 @@ https://aiida-testing.readthedocs.org/.
 If you have a ReadTheDocs account, you can also enable it on your own
 fork for testing, but you will have to use a different name.
 
+Local documentation
++++++++++++++++++++
+
+Of course, you can also build the documentation locally::
+
+    pip install -e .[docs]
+    cd docs
+    make
 
 PyPI release
 ++++++++++++
