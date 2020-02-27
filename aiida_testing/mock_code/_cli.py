@@ -18,18 +18,6 @@ from ._env_keys import EnvKeys
 SUBMIT_FILE = '_aiidasubmit.sh'
 
 
-def check_expression(filename, expression_list):
-    """returns True if 'filename' matches any expression in 'expression_list'"""
-
-    match = False
-    for expr in expression_list:
-        if fnmatch.fnmatch(filename, expr):
-            match = True
-            break
-
-    return match
-
-
 def run() -> None:
     """
     Run the mock AiiDA code. If the corresponding result exists, it is
@@ -64,8 +52,8 @@ def run() -> None:
                 continue
             os.makedirs(os.path.join(res_dir, dirname), exist_ok=True)
             for filename in filenames:
-                if check_expression(filename, ignore_files):
-                   continue
+                if any(fnmatch.fnmatch(filename, expr) for expr in ignore_files):
+                    continue
                 file_path = os.path.join(dirname, filename)
                 res_file_path = os.path.join(res_dir, file_path)
                 shutil.copyfile(file_path, res_file_path)
