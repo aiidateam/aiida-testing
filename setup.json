@@ -1,7 +1,7 @@
 {
-  "name": "aiida-mock-codes",
-  "version": "0.0.0a1",
-  "url": "https://aiida-mock-codes.readthedocs.io/",
+  "name": "aiida-testing",
+  "version": "0.1.0.dev0",
+  "url": "https://aiida-testing.readthedocs.io/",
   "description": "Pytest plugin for mocking AiiDA codes.",
   "author": "Dominik Gresch",
   "author_email": "greschd@gmx.ch",
@@ -23,7 +23,8 @@
     "AiiDA",
     "testing",
     "pytest",
-    "mock"
+    "mock",
+    "cache"
   ],
   "include_package_data": true,
   "setup_requires": [
@@ -55,7 +56,7 @@
   },
   "entry_points": {
     "console_scripts": [
-      "aiida-mock-code=aiida_mock_codes._cli:run"
+      "aiida-mock-code=aiida_testing.mock_code._cli:run"
     ]
   }
 }

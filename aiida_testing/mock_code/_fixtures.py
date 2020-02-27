@@ -3,38 +3,18 @@
 Defines a pytest fixture for creating mock AiiDA codes.
 """
 
-import os
 import uuid
 import shutil
 import inspect
 import pathlib
 import typing as ty
 
-import yaml
 import pytest
 
 from ._env_keys import EnvKeys
+from .._config import get_config
 
 __all__ = ("mock_code_factory", )
-
-
-def get_config() -> ty.Dict[str, str]:
-    """
-    Reads the configuration file ``.aiida-mock-codes.yml``. The
-    file is searched in the current working directory and all its parent
-    directories.
-    """
-    cwd = pathlib.Path(os.getcwd())
-    config: ty.Dict[str, str]
-    for dir_path in [cwd, *cwd.parents]:
-        config_file_path = (dir_path / '.aiida-mock-codes.yml')
-        if config_file_path.exists():
-            with open(config_file_path) as config_file:
-                config = yaml.load(config_file, Loader=yaml.SafeLoader)
-                break
-    else:
-        config = {}
-    return config
 
 
 @pytest.fixture(scope='function')
@@ -42,7 +22,7 @@ def mock_code_factory(aiida_localhost):
     """
     Fixture to create a mock AiiDA Code.
     """
-    config = get_config()
+    config = get_config().get('mock_code', {})
 
     def _get_mock_code(
         label: str,

@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
 Implements the executable for running a mock AiiDA code.
@@ -94,7 +95,7 @@ def strip_submit_content(aiidasubmit_content_bytes: bytes) -> bytes:
     """
     aiidasubmit_content = aiidasubmit_content_bytes.decode()
     lines: ty.Iterable[str] = aiidasubmit_content.splitlines()
-    # Strip lines containing the aiida-mock-code environment variables.
+    # Strip lines containing the aiida_testing.mock_code environment variables.
     lines = (line for line in lines if 'export AIIDA_MOCK' not in line)
     # Remove abspath of the aiida-mock-code, but keep cmdline
     # arguments.
