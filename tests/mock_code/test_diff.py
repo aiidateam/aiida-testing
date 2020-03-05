@@ -68,7 +68,7 @@ def test_basic(mock_code_factory, generate_diff_inputs):  # pylint: disable=rede
         label='diff',
         data_dir_abspath=os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data'),
         entry_point=CALC_ENTRY_POINT,
-        ignore_files=('_aiidasubmit.sh', 'file1.txt', 'file2.txt')
+        ignore_files=('_aiidasubmit.sh', 'file*')
     )
 
     res, node = run_get_node(
@@ -106,7 +106,7 @@ def test_broken_code(mock_code_factory, generate_diff_inputs):  # pylint: disabl
         label='diff-broken',
         data_dir_abspath=os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data'),
         entry_point=CALC_ENTRY_POINT,
-        ignore_files=('_aiidasubmit.sh', 'file1.txt', 'file2.txt')
+        ignore_files=('_aiidasubmit.sh', 'file?.txt')
     )
 
     res, node = run_get_node(
