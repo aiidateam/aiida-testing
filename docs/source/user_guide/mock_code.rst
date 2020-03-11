@@ -44,6 +44,7 @@ Second, we need to tell the mock executable where to find the *actual* ``diff`` 
 .. code-block:: yaml
 
     mock_code:
+      # code-label: absolute path
       diff: /usr/bin/diff
 
 .. note::
