@@ -2,7 +2,7 @@
   "name": "aiida-testing",
   "version": "0.1.0.dev0",
   "url": "https://aiida-testing.readthedocs.io/",
-  "description": "Pytest plugin for mocking AiiDA codes.",
+  "description": "Helpers for testing AiiDA plugins using pytest.",
   "author": "Dominik Gresch",
   "author_email": "greschd@gmx.ch",
   "python_requires": ">=3.6",
