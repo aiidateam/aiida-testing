@@ -15,7 +15,6 @@ from aiida.plugins import CalculationFactory, DataFactory
 CALC_ENTRY_POINT = 'diff'
 
 
-
 def check_diff_output(result):
     """
     Checks the result from a diff calculation against a reference.
