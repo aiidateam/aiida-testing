@@ -5,12 +5,8 @@ Test basic usage of the mock code on examples using aiida-diff.
 
 import os
 import tempfile
-
-import pytest
-
-from aiida import orm
 from aiida.engine import run_get_node
-from aiida.plugins import CalculationFactory, DataFactory
+from aiida.plugins import CalculationFactory
 
 CALC_ENTRY_POINT = 'diff'
 
@@ -28,7 +24,7 @@ def check_diff_output(result):
     )
 
 
-def test_basic(mock_code_factory, generate_diff_inputs):  # pylint: disable=redefined-outer-name
+def test_basic(mock_code_factory, generate_diff_inputs):
     """
     Basic check of the mock code functionality.
     """
@@ -46,7 +42,7 @@ def test_basic(mock_code_factory, generate_diff_inputs):  # pylint: disable=rede
     check_diff_output(res)
 
 
-def test_inexistent_data(mock_code_factory, generate_diff_inputs):  # pylint: disable=redefined-outer-name
+def test_inexistent_data(mock_code_factory, generate_diff_inputs):
     """
     Check that the mock code works if there is no existing data.
     """
@@ -65,7 +61,7 @@ def test_inexistent_data(mock_code_factory, generate_diff_inputs):  # pylint: di
         check_diff_output(res)
 
 
-def test_broken_code(mock_code_factory, generate_diff_inputs):  # pylint: disable=redefined-outer-name
+def test_broken_code(mock_code_factory, generate_diff_inputs):
     """
     Check that the mock code works also when no executable is given,
     when the result exists already.
