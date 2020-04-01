@@ -4,8 +4,13 @@ Defines fixtures for mocking AiiDA codes, with caching at the level of
 the executable.
 """
 
-import typing as ty
+from ._fixtures import *
 
-from ._fixtures import mock_code_factory
-
-__all__: ty.Tuple[str, ...] = ('mock_code_factory', )
+# Note: This is necessary for the sphinx doc - otherwise it does not find aiida_testing.mock_code.mock_code_factory
+__all__ = (
+    "pytest_addoption",
+    "testing_config_action",
+    "mock_regenerate_test_data",
+    "testing_config",
+    "mock_code_factory",
+)
