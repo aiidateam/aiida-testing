@@ -7,6 +7,7 @@ usage: pip install .[dev]
 
 import json
 import os
+from utils import fastentrypoints  # NOQA
 
 from setuptools import find_packages, setup
 
