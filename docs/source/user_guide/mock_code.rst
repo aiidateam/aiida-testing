@@ -20,7 +20,7 @@ First, we want to define a fixture for our mocked code in the ``conftest.py``:
     pytest_plugins = ['aiida.manage.tests.pytest_fixtures', 'aiida_testing.mock_code']
 
     # Directory where to store outputs for known inputs (usually tests/data)
-    DATA_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data'),
+    DATA_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data')
 
     @pytest.fixture(scope='function')
     def mocked_diff(mock_code_factory):
@@ -35,7 +35,7 @@ First, we want to define a fixture for our mocked code in the ``conftest.py``:
             ignore_files=('_aiidasubmit.sh', 'file*')
         )
         
-Second, we need to tell the mock executable where to find the *actual* ``diff`` executable by creating a ``.aiida-testing-config.yml`` file in the top level of our plugin.
+Second, we need to tell the mock executable where to find the *actual* ``diff`` executable by creating a ``.testing-config-action.yml`` file in the top level of our plugin.
 
 .. note::
     This step is needed **only** when we want to use the actual executable to (re)generate test data.
@@ -71,10 +71,32 @@ Finally, we can use our fixture in our tests as if it would provide a normal :py
         results, node = run_get_node( CalculationFactory('diff'), code=mocked_diff, **inputs)
         assert node.is_finished_ok
 
-When running the test for the first time, ``aiida-mock-code`` will pipe through to the actual ``diff`` executable.
+When running the test via ``pytest`` for the first time, ``aiida-mock-code`` will pipe through to the actual ``diff`` executable.
 The next time, it will recognise the inputs and directly use the outputs cached in the data directory.
 
+.. note::
+    ``aiida-mock-code`` "recognizes" calculations by computing a hash of the working directory of the calculation (as prepared by the calculation input plugin).
+    It does *not* rely on the hashing mechanism of AiiDA.
+
+
 Don't forget to add your data directory to your test data in order to make them available in CI and to other users of your plugin!
+
+Since the ``.aiida-testing-config.yml`` is usually specific to your machine, it usually better not to commit it.
+Tests will run fine without it, and if other developers need to change test inputs, they can easily regenerate a template for it using ``pytest --testing-config-action=generate``.
+
+For further documentation on the pytest commandline options added by mock code, see:
+
+.. code-block:: bash
+
+    $ pytest -h
+    ...
+    custom options:
+      --testing-config-action=TESTING_CONFIG_ACTION
+                            Read .aiida-testing-config.yml config file if present
+                            ('read'), require config file ('require') or generate
+                            new config file ('generate').
+      --mock-regenerate-test-data
+                            Regenerate test data.
 
 
 Limitations
