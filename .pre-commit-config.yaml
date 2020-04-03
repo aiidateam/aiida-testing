@@ -10,7 +10,7 @@ repos:
   rev: v0.740
   hooks:
   - id: mypy
-    exclude: '^(docs/)|(examples/)'
+    exclude: '^(docs/)|(examples/)|(utils/fastentrypoints.py)'
 
 - repo: local
   hooks:
@@ -20,7 +20,7 @@ repos:
     entry: prospector
     types: [file, python]
     language: system
-    exclude: '^(docs/)|(examples/)'
+    exclude: '^(docs/)|(examples/)|(utils/fastentrypoints.py)'
 
   - id: version-number
     name: Check version numbers

@@ -12,14 +12,7 @@ jobs:
         python-version: [3.6, 3.8]
         backend: ['django']
     steps:
-    - uses: actions/checkout@v1
-    - uses: harmon758/postgresql-action@v1
-      with:
-        postgresql version: '11'
-        postgresql db: test_${{ matrix.backend }}
-        postgresql user: 'postgres'
-        postgresql password: ''
-
+    - uses: actions/checkout@v2
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v1
       with:
@@ -32,7 +25,7 @@ jobs:
         echo 'deb https://dl.bintray.com/rabbitmq/debian bionic main' | sudo tee -a /etc/apt/sources.list.d/bintray.rabbitmq.list
         sudo rm -f /etc/apt/sources.list.d/dotnetdev.list /etc/apt/sources.list.d/microsoft-prod.list
         sudo apt update
-        sudo apt install postgresql postgresql-server-dev-all postgresql-client rabbitmq-server graphviz
+        sudo apt install postgresql-10 rabbitmq-server graphviz
         sudo systemctl status rabbitmq-server.service
 
     - name: Install python dependencies
@@ -50,22 +43,22 @@ jobs:
         aiida-mock-code || true
         cd tests; pytest
 
-  # docs:
-  #   runs-on: ubuntu-latest
-  #   timeout-minutes: 15
-  #   steps:
-  #   - uses: actions/checkout@v1
-  #   - name: Set up Python 3.7
-  #     uses: actions/setup-python@v1
-  #     with:
-  #       python-version: 3.7
-  #   - name: Install python dependencies
-  #     run: |
-  #       pip install --upgrade pip
-  #       pip install -e .[docs]
-  #       reentry scan -r aiida
-  #   - name: Build docs
-  #     run: cd docs && make
+  docs:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+    - uses: actions/checkout@v1
+    - name: Set up Python 3.7
+      uses: actions/setup-python@v1
+      with:
+        python-version: 3.7
+    - name: Install python dependencies
+      run: |
+        pip install --upgrade pip
+        pip install -e .[docs]
+        reentry scan -r aiida
+    - name: Build docs
+      run: cd docs && make
 
   pre-commit:
     runs-on: ubuntu-latest

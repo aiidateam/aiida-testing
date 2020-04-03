@@ -11,6 +11,7 @@ import shutil
 import hashlib
 import subprocess
 import typing as ty
+import fnmatch
 
 from ._env_keys import EnvKeys
 
@@ -30,9 +31,14 @@ def run() -> None:
     data_dir = os.environ[EnvKeys.DATA_DIR.value]
     executable_path = os.environ[EnvKeys.EXECUTABLE_PATH.value]
     ignore_files = os.environ[EnvKeys.IGNORE_FILES.value].split(':')
+    regenerate_data = os.environ[EnvKeys.REGENERATE_DATA.value] == 'True'
 
     hash_digest = get_hash().hexdigest()
+
     res_dir = pathlib.Path(data_dir) / f"mock-{label}-{hash_digest}"
+
+    if regenerate_data and res_dir.exists():
+        shutil.rmtree(res_dir)
 
     if not res_dir.exists():
         if not executable_path:
@@ -51,7 +57,7 @@ def run() -> None:
                 continue
             os.makedirs(os.path.join(res_dir, dirname), exist_ok=True)
             for filename in filenames:
-                if filename in ignore_files:
+                if any(fnmatch.fnmatch(filename, expr) for expr in ignore_files):
                     continue
                 file_path = os.path.join(dirname, filename)
                 res_file_path = os.path.join(res_dir, file_path)
@@ -115,7 +121,7 @@ def replace_submit_file(executable_path: str) -> None:
     for line in submit_file_content.splitlines():
         if 'export AIIDA_MOCK' in line:
             continue
-        elif 'aiida-mock-code' in line:
+        if 'aiida-mock-code' in line:
             submit_file_res_lines.append(
                 f"'{executable_path}' " + line.split("aiida-mock-code'")[1]
             )
