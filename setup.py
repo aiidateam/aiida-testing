@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+"""Set up aiida-testing package."""
 
 import os
 import warnings
@@ -7,7 +8,7 @@ import setuptools
 from setuptools.config import read_configuration
 
 try:
-    import fastentrypoints  # NOQA
+    import fastentrypoints  # NOQA  # pylint: disable=unused-import
 except ImportError:
     warnings.warn(
         "The 'fastentrypoints' module could not be loaded. "

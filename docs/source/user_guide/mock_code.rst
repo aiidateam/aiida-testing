@@ -35,7 +35,7 @@ First, we want to define a fixture for our mocked code in the ``conftest.py``:
             ignore_files=('_aiidasubmit.sh', 'file*')
         )
         
-Second, we need to tell the mock executable where to find the *actual* ``diff`` executable by creating a ``.testing-config-action.yml`` file in the top level of our plugin.
+Second, we need to tell the mock executable where to find the *actual* ``diff`` executable by creating a ``.aiida-testing-config.yml`` file in the top level of our plugin.
 
 .. note::
     This step is needed **only** when we want to use the actual executable to (re)generate test data.

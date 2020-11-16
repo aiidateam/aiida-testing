@@ -7,8 +7,8 @@ import os
 import pathlib
 import typing as ty
 import collections
-from voluptuous import Schema
 from enum import Enum
+from voluptuous import Schema
 
 import yaml
 

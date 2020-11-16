@@ -44,11 +44,13 @@ def pytest_addoption(parser):
 
 @pytest.fixture(scope='session')
 def testing_config_action(request):
+    """Read action for testing configuration from command line option."""
     return request.config.getoption("--testing-config-action")
 
 
 @pytest.fixture(scope='session')
 def mock_regenerate_test_data(request):
+    """Read whether to regenerate test data from command line option."""
     return request.config.getoption("--mock-regenerate-test-data")
 
 
