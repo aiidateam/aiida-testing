@@ -6,12 +6,12 @@ Implements the executable for running a mock AiiDA code.
 
 import os
 import sys
-import pathlib
 import shutil
 import hashlib
 import subprocess
 import typing as ty
 import fnmatch
+from pathlib import Path
 
 from ._env_keys import EnvKeys
 
@@ -31,11 +31,12 @@ def run() -> None:
     data_dir = os.environ[EnvKeys.DATA_DIR.value]
     executable_path = os.environ[EnvKeys.EXECUTABLE_PATH.value]
     ignore_files = os.environ[EnvKeys.IGNORE_FILES.value].split(':')
+    ignore_paths = os.environ[EnvKeys.IGNORE_PATHS.value].split(':')
     regenerate_data = os.environ[EnvKeys.REGENERATE_DATA.value] == 'True'
 
     hash_digest = get_hash().hexdigest()
 
-    res_dir = pathlib.Path(data_dir) / f"mock-{label}-{hash_digest}"
+    res_dir = Path(data_dir) / f"mock-{label}-{hash_digest}"
 
     if regenerate_data and res_dir.exists():
         shutil.rmtree(res_dir)
@@ -44,27 +45,21 @@ def run() -> None:
         if not executable_path:
             sys.exit("No existing output, and no executable specified.")
 
-        # replace executable path in submit file
+        # replace executable path in submit file and run calculation
         replace_submit_file(executable_path=executable_path)
         subprocess.call(['bash', SUBMIT_FILE])
 
+        # back up results to data directory
         os.makedirs(res_dir)
-
-        # Here we rely on getting the directory name before
-        # accessing its content, hence using os.walk.
-        for dirname, _, filenames in os.walk('.'):
-            if dirname.startswith('./.aiida'):
-                continue
-            os.makedirs(os.path.join(res_dir, dirname), exist_ok=True)
-            for filename in filenames:
-                if any(fnmatch.fnmatch(filename, expr) for expr in ignore_files):
-                    continue
-                file_path = os.path.join(dirname, filename)
-                res_file_path = os.path.join(res_dir, file_path)
-                shutil.copyfile(file_path, res_file_path)
+        copy_files(
+            src_dir=Path('.'),
+            dest_dir=res_dir,
+            ignore_files=ignore_files,
+            ignore_paths=ignore_paths
+        )
 
     else:
-        # copy outputs into working directory
+        # copy outputs from data directory to working directory
         for path in res_dir.iterdir():
             if path.is_dir():
                 shutil.rmtree(path.name, ignore_errors=True)
@@ -82,7 +77,7 @@ def get_hash() -> 'hashlib._Hash':
     md5sum = hashlib.md5()
     # Here the order needs to be consistent, thus globbing
     # with 'sorted'.
-    for path in sorted(pathlib.Path('.').glob('**/*')):
+    for path in sorted(Path('.').glob('**/*')):
         if path.is_file() and not path.match('.aiida/**'):
             with open(path, 'rb') as file_obj:
                 file_content_bytes = file_obj.read()
@@ -129,3 +124,43 @@ def replace_submit_file(executable_path: str) -> None:
             submit_file_res_lines.append(line)
     with open(SUBMIT_FILE, 'w') as submit_file:
         submit_file.write('\n'.join(submit_file_res_lines))
+
+
+def copy_files(
+    src_dir: Path, dest_dir: Path, ignore_files: ty.Iterable[str], ignore_paths: ty.Iterable[str]
+) -> None:
+    """Copy files from source to destination directory while ignoring certain files/folders.
+
+    :param src_dir: Source directory
+    :param dest_dir: Destination directory
+    :param ignore_files: A list of file names (UNIX shell style patterns allowed) which are not copied to the
+        destination.
+    :param ignore_paths: A list of paths (UNIX shell style patterns allowed) which are not copied to the destination.
+    """
+    exclude_paths: ty.Set = {filepath for path in ignore_paths for filepath in src_dir.glob(path)}
+    exclude_files = {path.relative_to(src_dir) for path in exclude_paths if path.is_file()}
+    exclude_dirs = {path.relative_to(src_dir) for path in exclude_paths if path.is_dir()}
+
+    # Here we rely on getting the directory name before
+    # accessing its content, hence using os.walk.
+    for dirpath, _, filenames in os.walk(src_dir):
+        relative_dir = Path(dirpath).relative_to(src_dir)
+        dirs_to_check = list(relative_dir.parents) + [relative_dir]
+
+        if relative_dir.parts and relative_dir.parts[0] == ('.aiida'):
+            continue
+
+        if any(exclude_dir in dirs_to_check for exclude_dir in exclude_dirs):
+            continue
+
+        for filename in filenames:
+            if any(fnmatch.fnmatch(filename, expr) for expr in ignore_files):
+                continue
+
+            if relative_dir / filename in exclude_files:
+                continue
+
+            os.makedirs(dest_dir / relative_dir, exist_ok=True)
+
+            relative_file_path = relative_dir / filename
+            shutil.copyfile(src_dir / relative_file_path, dest_dir / relative_file_path)

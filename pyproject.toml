@@ -9,3 +9,12 @@ max-line-length = 120
 disable = [
     "duplicate-code",
 ]
+
+[tool.pytest.ini_options]
+
+filterwarnings = [
+    "ignore::DeprecationWarning:frozendict:",
+    "ignore::DeprecationWarning:reentry:",
+    "ignore::DeprecationWarning:babel:",
+    "ignore::DeprecationWarning:sqlalchemy_utils:",
+]

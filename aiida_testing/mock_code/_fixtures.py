@@ -8,6 +8,9 @@ import shutil
 import inspect
 import pathlib
 import typing as ty
+import warnings
+import collections
+
 import click
 import pytest
 
@@ -88,12 +91,13 @@ def mock_code_factory(
         label: str,
         entry_point: str,
         data_dir_abspath: ty.Union[str, pathlib.Path],
-        ignore_files: ty.Iterable[str] = ('_aiidasubmit.sh'),
+        ignore_files: ty.Iterable[str] = ('_aiidasubmit.sh', ),
+        ignore_paths: ty.Iterable[str] = ('_aiidasubmit.sh', ),
         executable_name: str = '',
         _config: dict = testing_config,
         _config_action: str = testing_config_action,
         _regenerate_test_data: bool = mock_regenerate_test_data,
-    ):
+    ):  # pylint: disable=too-many-arguments
         """
         Creates a mock AiiDA code. If the same inputs have been run previously,
         the results are copied over from the corresponding sub-directory of
@@ -110,7 +114,10 @@ def mock_code_factory(
             Absolute path of the directory where the code results are
             stored.
         ignore_files :
-            A list of files which are not copied to the results directory
+            A list of file names (UNIX shell style patterns allowed) which are not copied to the results directory
+            after the code has been executed.
+        ignore_paths :
+            A list of paths (UNIX shell style patterns allowed) that are not copied to the results directory
             after the code has been executed.
         executable_name :
             Name of code executable to search for in PATH, if configuration file does not specify location already.
@@ -121,7 +128,21 @@ def mock_code_factory(
             If 'generate', add new key (label) to config dictionary.
         _regenerate_test_data :
             If True, regenerate test data instead of reusing.
+
+        .. deprecated:: 0.1.0
+            Keyword `ingore_files` is deprecated and will be removed in `v1.0`. Use `ignore_paths` instead.
         """
+        if ignore_files != ('_aiidasubmit.sh', ):
+            warnings.warn(
+                'keyword `ignore_files` is deprecated and will be removed in `v1.0`. Use `ignore_paths` instead.',
+                DeprecationWarning
+            )  # pylint: disable=no-member
+
+        # It's easy to forget the final comma and pass a string, e.g. `ignore_paths = ('_aiidasubmit.sh')`
+        for arg in (ignore_paths, ignore_files):
+            assert isinstance(arg, collections.Iterable) and not isinstance(arg, str), \
+                f"'ignore_files' and 'ignore_paths' arguments must be tuples or lists, found {type(arg)}"
+
         # we want to set a custom prepend_text, which is why the code
         # can not be reused.
         code_label = f'mock-{label}-{uuid.uuid4()}'
@@ -163,6 +184,7 @@ def mock_code_factory(
                 export {EnvKeys.DATA_DIR.value}="{data_dir_abspath}"
                 export {EnvKeys.EXECUTABLE_PATH.value}="{code_executable_path}"
                 export {EnvKeys.IGNORE_FILES.value}="{':'.join(ignore_files)}"
+                export {EnvKeys.IGNORE_PATHS.value}="{':'.join(ignore_paths)}"
                 export {EnvKeys.REGENERATE_DATA.value}={'True' if _regenerate_test_data else 'False'}
                 """
             )
